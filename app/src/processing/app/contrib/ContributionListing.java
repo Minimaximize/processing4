@@ -156,7 +156,7 @@ public class ContributionListing {
       if (librariesByCategory.containsKey(category)) {
         List<Contribution> list = librariesByCategory.get(category);
         list.add(contribution);
-        Collections.sort(list, COMPARATOR);
+        list.sort(COMPARATOR);
 
       } else {
         ArrayList<Contribution> list = new ArrayList<>();
@@ -362,13 +362,12 @@ public class ContributionListing {
                                     final ContribProgressMonitor progress) {
 
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        downloadingListingLock.lock();
+    new Thread(() -> {
+      downloadingListingLock.lock();
 
-        try {
-          URL url = new URL(LISTING_URL);
-          // testing port
+      try {
+        URL url = new URL(LISTING_URL);
+        // testing port
 //          url = new URL("http", "download.processing.org", 8989, "/contribs");
 
 //          "http://download.processing.org/contribs";
@@ -380,47 +379,43 @@ public class ContributionListing {
 //          url = new URL(LISTING_URL + "?" + contribInfo);
 //          System.out.println(contribInfo.length() + " " + contribInfo);
 
-          File tempContribFile = Base.getSettingsFile("contribs.tmp");
-          tempContribFile.setWritable(true, false);
-          ContributionManager.download(url, base.getInstalledContribsInfo(),
-                                       tempContribFile, progress);
-          if (!progress.isCanceled() && !progress.isError()) {
-            if (listingFile.exists()) {
-              listingFile.delete();  // may silently fail, but below may still work
-            }
-            if (tempContribFile.renameTo(listingFile)) {
-              listDownloaded = true;
-              listDownloadFailed = false;
-              try {
-                // TODO: run this in SwingWorker done() [jv]
-                EventQueue.invokeAndWait(new Runnable() {
-                  @Override
-                  public void run() {
-                    setAdvertisedList(listingFile);
-                    base.setUpdatesAvailable(countUpdates(base));
-                  }
-                });
-              } catch (InterruptedException e) {
-                e.printStackTrace();
-              } catch (InvocationTargetException e) {
-                Throwable cause = e.getCause();
-                if (cause instanceof RuntimeException) {
-                  throw (RuntimeException) cause;
-                } else {
-                  cause.printStackTrace();
-                }
-              }
-            } else {
-              listDownloadFailed = true;
-            }
+        File tempContribFile = Base.getSettingsFile("contribs.tmp");
+        tempContribFile.setWritable(true, false);
+        ContributionManager.download(url, base.getInstalledContribsInfo(),
+                                     tempContribFile, progress);
+        if (!progress.isCanceled() && !progress.isError()) {
+          if (listingFile.exists()) {
+            listingFile.delete();  // may silently fail, but below may still work
           }
-
-        } catch (MalformedURLException e) {
-          progress.error(e);
-          progress.finished();
-        } finally {
-          downloadingListingLock.unlock();
+          if (tempContribFile.renameTo(listingFile)) {
+            listDownloaded = true;
+            listDownloadFailed = false;
+            try {
+              // TODO: run this in SwingWorker done() [jv]
+              EventQueue.invokeAndWait(() -> {
+                setAdvertisedList(listingFile);
+                base.setUpdatesAvailable(countUpdates(base));
+              });
+            } catch (InterruptedException e) {
+              e.printStackTrace();
+            } catch (InvocationTargetException e) {
+              Throwable cause = e.getCause();
+              if (cause instanceof RuntimeException) {
+                throw (RuntimeException) cause;
+              } else {
+                cause.printStackTrace();
+              }
+            }
+          } else {
+            listDownloadFailed = true;
+          }
         }
+
+      } catch (MalformedURLException e) {
+        progress.error(e);
+        progress.finished();
+      } finally {
+        downloadingListingLock.unlock();
       }
     }, "Contribution List Downloader").start();
   }

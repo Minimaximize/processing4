@@ -139,20 +139,18 @@ implements Scrollable, ContributionListing.ChangeListener {
     table.setAutoCreateRowSorter(false);
     table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent event) {
-          //TODO this executes 2 times when clicked and 1 time when traversed using arrow keys
-          //Ideally this should always be true but while clearing the table something fishy is going on
-          if (table.getSelectedRow() != -1) {
-            setSelectedPanel(panelByContribution.get(table.getValueAt(table
-              .getSelectedRow(), 0)));
-            // Preventing the focus to move out of filterField after typing every character
-            if (!contributionTab.filterHasFocus()) {
-              table.requestFocusInWindow();
-            }
-          }
+    table.getSelectionModel().addListSelectionListener(event -> {
+      //TODO this executes 2 times when clicked and 1 time when traversed using arrow keys
+      //Ideally this should always be true but while clearing the table something fishy is going on
+      if (table.getSelectedRow() != -1) {
+        setSelectedPanel(panelByContribution.get(table.getValueAt(table
+          .getSelectedRow(), 0)));
+        // Preventing the focus to move out of filterField after typing every character
+        if (!contributionTab.filterHasFocus()) {
+          table.requestFocusInWindow();
         }
-      });
+      }
+    });
 
     sorter = new TableRowSorter<>(model);
     table.setRowSorter(sorter);

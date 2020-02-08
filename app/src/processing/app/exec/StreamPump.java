@@ -27,14 +27,12 @@ import processing.app.Base;
  */
 public class StreamPump implements Runnable {
   private static final ExecutorService threads = 
-    Executors.newCachedThreadPool(new ThreadFactory() {
-        public Thread newThread(final Runnable r) {
-          final Thread t = new Thread(r);
-          t.setDaemon(true);
-          t.setName("StreamPump " + t.getId());
-          return t;
-        }
-      });
+    Executors.newCachedThreadPool(r -> {
+      final Thread t = new Thread(r);
+      t.setDaemon(true);
+      t.setName("StreamPump " + t.getId());
+      return t;
+    });
 
   private final BufferedReader reader;
   private final List<LineProcessor> outs = new CopyOnWriteArrayList<LineProcessor>();

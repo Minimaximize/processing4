@@ -66,17 +66,15 @@ public class UpdateCheck {
     this.base = base;
 
     if (isAllowed()) {
-      new Thread(new Runnable() {
-        public void run() {
-          try {
-            Thread.sleep(5 * 1000);  // give the PDE time to get rolling
-            updateCheck();
+      new Thread(() -> {
+        try {
+          Thread.sleep(5 * 1000);  // give the PDE time to get rolling
+          updateCheck();
 
-          } catch (Exception e) {
-            // This can safely be ignored, too many situations where no net
-            // connection is available that behave in strange ways.
-            // Covers likely IOException, InterruptedException, and any others.
-          }
+        } catch (Exception e) {
+          // This can safely be ignored, too many situations where no net
+          // connection is available that behave in strange ways.
+          // Covers likely IOException, InterruptedException, and any others.
         }
       }, "Update Checker").start();
     }

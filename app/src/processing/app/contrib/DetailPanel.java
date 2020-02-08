@@ -123,12 +123,10 @@ class DetailPanel extends JPanel {
 
     contextMenu = new JPopupMenu();
     openFolder = new JMenuItem("Open Folder");
-    openFolder.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        if (contrib instanceof LocalContribution) {
-          File folder = ((LocalContribution) contrib).getFolder();
-          Platform.openFolder(folder);
-        }
+    openFolder.addActionListener(e -> {
+      if (contrib instanceof LocalContribution) {
+        File folder = ((LocalContribution) contrib).getFolder();
+        Platform.openFolder(folder);
       }
     });
 
@@ -175,15 +173,13 @@ class DetailPanel extends JPanel {
 
     descriptionPane.setBorder(new EmptyBorder(4, 7, 7, 7));
     descriptionPane.setHighlighter(null);
-    descriptionPane.addHyperlinkListener(new HyperlinkListener() {
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          // for 3.2.3, added the isSelected() prompt here, rather than
-          // adding/removing the listener repeatedly
-          if (isSelected()) {
-            if (enableHyperlinks && e.getURL() != null) {
-              Platform.openURL(e.getURL().toString());
-            }
+    descriptionPane.addHyperlinkListener(e -> {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        // for 3.2.3, added the isSelected() prompt here, rather than
+        // adding/removing the listener repeatedly
+        if (isSelected()) {
+          if (enableHyperlinks && e.getURL() != null) {
+            Platform.openURL(e.getURL().toString());
           }
         }
       }
@@ -210,11 +206,7 @@ class DetailPanel extends JPanel {
       updateButton.setOpaque(false);
       updateButton.setVisible(false);
 
-      updateButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          update();
-        }
-      });
+      updateButton.addActionListener(e -> update());
     }
 
     updateBox.add(updateButton, BorderLayout.EAST);
@@ -253,16 +245,14 @@ class DetailPanel extends JPanel {
 
     installRemoveButton = new JButton(" ");
     installRemoveButton.setInheritsPopupMenu(true);
-    installRemoveButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        String mode = installRemoveButton.getText();
-        if (mode.equals(installText)) {
-          install();
-        } else if (mode.equals(removeText)) {
-          remove();
-        } else if (mode.equals(undoText)) {
-          undo();
-        }
+    installRemoveButton.addActionListener(e -> {
+      String mode = installRemoveButton.getText();
+      if (mode.equals(installText)) {
+        install();
+      } else if (mode.equals(removeText)) {
+        remove();
+      } else if (mode.equals(undoText)) {
+        undo();
       }
     });
 
@@ -410,7 +400,7 @@ class DetailPanel extends JPanel {
     String fontFace = "<font face=\"" + boldFont.getName() + "\">";
 
     StringBuilder desc = new StringBuilder();
-    desc.append("<html><body>" + fontFace);
+    desc.append("<html><body>").append(fontFace);
     if (contrib.getUrl() == null) {
       desc.append(contrib.getName());
     } else {

@@ -66,15 +66,10 @@ public class ColorSelector implements Tool {
         if (selector == null) {
           selector = new ColorChooser(base.getActiveEditor(),
                                       false, Color.WHITE,
-                                      Language.text("menu.edit.copy"),
-                                      new ActionListener() {
-
-            @Override
-            public void actionPerformed(ActionEvent e) {
-              Clipboard c = Toolkit.getSystemClipboard();
-              c.setContents(new StringSelection(selector.getHexColor()), null);
-            }
-          });
+                                      Language.text("menu.edit.copy"), e -> {
+                                        Clipboard c = Toolkit.getSystemClipboard();
+                                        c.setContents(new StringSelection(selector.getHexColor()), null);
+                                      });
         }
       }
     }

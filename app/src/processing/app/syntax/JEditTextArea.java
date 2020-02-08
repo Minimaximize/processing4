@@ -102,11 +102,9 @@ public class JEditTextArea extends JComponent
     enableEvents(AWTEvent.KEY_EVENT_MASK);
 
     if (!DISABLE_CARET) {
-      caretTimer = new Timer(500, new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          if (hasFocus()) {
-            blinkCaret();
-          }
+      caretTimer = new Timer(500, e -> {
+        if (hasFocus()) {
+          blinkCaret();
         }
       });
       caretTimer.setInitialDelay(500);
@@ -152,13 +150,10 @@ public class JEditTextArea extends JComponent
     // We don't seem to get the initial focus event?
 //    focusedComponent = this;
 
-    addMouseWheelListener(new MouseWheelListener() {
-
-      @Override
-      public void mouseWheelMoved(MouseWheelEvent e) {
-        if (scrollBarsInitialized) {
-          if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
-            int scrollAmount = e.getUnitsToScroll();
+    addMouseWheelListener(e -> {
+      if (scrollBarsInitialized) {
+        if (e.getScrollType() == MouseWheelEvent.WHEEL_UNIT_SCROLL) {
+          int scrollAmount = e.getUnitsToScroll();
 //            System.out.println("rot/amt = " + e.getWheelRotation() + " " + amt);
 //            int max = vertical.getMaximum();
 //            System.out.println("UNIT SCROLL of " + amt + " at value " + vertical.getValue() + " and max " + max);
@@ -174,14 +169,13 @@ public class JEditTextArea extends JComponent
 //            }
 //            System.out.println("  " + e);
 
-            // inertia scrolling on OS X will fire several shift-wheel events
-            // that are negative values.. this makes the scrolling area jump.
-            boolean isHorizontal = Platform.isMacOS() && e.isShiftDown();
-            if (isHorizontal) {
-              horizontal.setValue(horizontal.getValue() + scrollAmount);
-            }else{
-              vertical.setValue(vertical.getValue() + scrollAmount);
-            }
+          // inertia scrolling on OS X will fire several shift-wheel events
+          // that are negative values.. this makes the scrolling area jump.
+          boolean isHorizontal = Platform.isMacOS() && e.isShiftDown();
+          if (isHorizontal) {
+            horizontal.setValue(horizontal.getValue() + scrollAmount);
+          }else{
+            vertical.setValue(vertical.getValue() + scrollAmount);
           }
         }
       }
@@ -1689,10 +1683,8 @@ public class JEditTextArea extends JComponent
         + getTextAsHtml(null) + "\n</pre></body></html>");
 
     Clipboard clipboard = processing.app.ui.Toolkit.getSystemClipboard();
-    clipboard.setContents(formatted, new ClipboardOwner() {
-      public void lostOwnership(Clipboard clipboard, Transferable contents) {
-        // I don't care about ownership
-      }
+    clipboard.setContents(formatted, (clipboard1, contents) -> {
+      // I don't care about ownership
     });
   }
 
@@ -2251,14 +2243,11 @@ public class JEditTextArea extends JComponent
       // If this is not done, mousePressed events accumulate
       // and the result is that scrolling doesn't stop after
       // the mouse is released
-      SwingUtilities.invokeLater(new Runnable() {
-        public void run()
-        {
-          if (evt.getAdjustable() == vertical) {
-            setFirstLine(vertical.getValue());
-          } else {
-            setHorizontalOffset(-horizontal.getValue());
-          }
+      SwingUtilities.invokeLater(() -> {
+        if (evt.getAdjustable() == vertical) {
+          setFirstLine(vertical.getValue());
+        } else {
+          setHorizontalOffset(-horizontal.getValue());
         }
       });
     }

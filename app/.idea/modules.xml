@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/../core/methods/preproc.iml" filepath="$PROJECT_DIR$/../core/methods/preproc.iml" />
+      <module fileurl="file://$PROJECT_DIR$/processing-app.iml" filepath="$PROJECT_DIR$/processing-app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../core/processing-core.iml" filepath="$PROJECT_DIR$/../core/processing-core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/libraries/dxf/processing-dxf.iml" filepath="$PROJECT_DIR$/../java/libraries/dxf/processing-dxf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/processing-java.iml" filepath="$PROJECT_DIR$/../java/processing-java.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/libraries/net/processing-net.iml" filepath="$PROJECT_DIR$/../java/libraries/net/processing-net.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/libraries/pdf/processing-pdf.iml" filepath="$PROJECT_DIR$/../java/libraries/pdf/processing-pdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/libraries/serial/processing-serial.iml" filepath="$PROJECT_DIR$/../java/libraries/serial/processing-serial.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../java/libraries/svg/processing-svg.iml" filepath="$PROJECT_DIR$/../java/libraries/svg/processing-svg.iml" />
+    </modules>
+  </component>
+</project>

@@ -466,29 +466,17 @@ public abstract class Mode {
     //System.out.println("rebuilding toolbar menu");
     // Add the single "Open" item
     item = Toolkit.newJMenuItem("Open...", 'O');
-    item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          base.handleOpenPrompt();
-        }
-      });
+    item.addActionListener(e -> base.handleOpenPrompt());
     toolbarMenu.add(item);
 
     insertToolbarRecentMenu();
 
     item = Toolkit.newJMenuItemShift("Examples...", 'O');
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        showExamplesFrame();
-      }
-    });
+    item.addActionListener(e -> showExamplesFrame());
     toolbarMenu.add(item);
 
     item = new JMenuItem(Language.text("examples.add_examples"));
-    item.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openExamples();
-      }
-    });
+    item.addActionListener(e -> ContributionManager.openExamples());
     toolbarMenu.add(item);
 
     // Add a list of all sketches and subfolders
@@ -560,21 +548,13 @@ public abstract class Mode {
     }
 
     JMenuItem addLib = new JMenuItem(Language.text("menu.library.add_library"));
-    addLib.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openLibraries();
-      }
-    });
+    addLib.addActionListener(e -> ContributionManager.openLibraries());
     importMenu.add(addLib);
     importMenu.addSeparator();
 
     rebuildLibraryList();
 
-    ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        base.activeEditor.handleImportLibrary(e.getActionCommand());
-      }
-    };
+    ActionListener listener = e -> base.activeEditor.handleImportLibrary(e.getActionCommand());
 
 //    try {
 //      pw = new PrintWriter(new FileWriter(System.getProperty("user.home") + "/Desktop/libs.csv"));
@@ -647,11 +627,8 @@ public abstract class Mode {
    * and how they appear in the examples window.
    */
   public File[] getExampleCategoryFolders() {
-    return examplesFolder.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return dir.isDirectory() && name.charAt(0) != '.';
-      }
-    });
+    return examplesFolder.listFiles(
+      (dir, name) -> dir.isDirectory() && name.charAt(0) != '.');
   }
 
 

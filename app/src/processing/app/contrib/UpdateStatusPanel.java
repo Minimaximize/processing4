@@ -43,12 +43,7 @@ public class UpdateStatusPanel extends StatusPanel {
     updateButton.setVisible(true);
     updateButton.setEnabled(false);
 
-    updateButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        contributionTab.updateAll();
-      }
-    });
+    updateButton.addActionListener(e -> contributionTab.updateAll());
     setBackground(new Color(0xebebeb));
     layout = new GroupLayout(this);
     setLayout(layout);

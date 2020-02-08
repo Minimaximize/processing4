@@ -74,7 +74,7 @@ public class MessageSiphon implements Runnable {
       // That message just gets supressed here..
       String mess = e.getMessage();
       if ((mess != null) &&
-          (mess.indexOf("Bad file descriptor") != -1)) {
+          (mess.contains("Bad file descriptor"))) {
         //if (e.getMessage().indexOf("Bad file descriptor") == -1) {
         //System.err.println("MessageSiphon err " + e);
         //e.printStackTrace();

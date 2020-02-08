@@ -56,12 +56,10 @@ public class WebFrame extends JFrame {
     editorPane = new JEditorPane();
 
     // Title cannot be set until the page has loaded
-    editorPane.addPropertyChangeListener("page", new PropertyChangeListener() {
-      public void propertyChange(PropertyChangeEvent evt) {
-        Object title = editorPane.getDocument().getProperty("title");
-        if (title instanceof String) {
-          setTitle((String) title);
-        }
+    editorPane.addPropertyChangeListener("page", evt -> {
+      Object title = editorPane.getDocument().getProperty("title");
+      if (title instanceof String) {
+        setTitle((String) title);
       }
     });
 
@@ -78,41 +76,33 @@ public class WebFrame extends JFrame {
       pain.add(panel);
     }
 
-    Toolkit.registerWindowCloseKeys(getRootPane(), new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        handleClose();
-      }
-    });
+    Toolkit.registerWindowCloseKeys(getRootPane(), e -> handleClose());
     Toolkit.setIcon(this);
 
     editorKit = (HTMLEditorKit) editorPane.getEditorKit();
     editorKit.setAutoFormSubmission(false);
 
-    editorPane.addHyperlinkListener(new HyperlinkListener() {
-      @Override
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        //System.out.println(e);
-        if (e instanceof FormSubmitEvent) {
-          String result = ((FormSubmitEvent) e).getData();
-          StringDict dict = new StringDict();
-          if (result.trim().length() != 0) {
-            String[] pairs = result.split("&");
-            for (String pair : pairs) {
-              //System.out.println("pair is " + pair);
-              String[] pieces = pair.split("=");
-              String attr = PApplet.urlDecode(pieces[0]);
-              String valu = PApplet.urlDecode(pieces[1]);
-              dict.set(attr, valu);
-            }
+    editorPane.addHyperlinkListener(e -> {
+      //System.out.println(e);
+      if (e instanceof FormSubmitEvent) {
+        String result = ((FormSubmitEvent) e).getData();
+        StringDict dict = new StringDict();
+        if (result.trim().length() != 0) {
+          String[] pairs = result.split("&");
+          for (String pair : pairs) {
+            //System.out.println("pair is " + pair);
+            String[] pieces = pair.split("=");
+            String attr = PApplet.urlDecode(pieces[0]);
+            String valu = PApplet.urlDecode(pieces[1]);
+            dict.set(attr, valu);
           }
-          //dict.print();
-          handleSubmit(dict);
-
-        } else if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          //System.out.println("clicked " + e.getURL());
-          handleLink(e.getURL().toExternalForm());
         }
+        //dict.print();
+        handleSubmit(dict);
+
+      } else if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        //System.out.println("clicked " + e.getURL());
+        handleLink(e.getURL().toExternalForm());
       }
     });
   }
@@ -130,17 +120,15 @@ public class WebFrame extends JFrame {
 
 
   public void setVisible(final boolean visible) {
-    new Thread(new Runnable() {
-      public void run() {
-        while (!ready) {
-          try {
-            Thread.sleep(5);
-          } catch (InterruptedException e) {
-            e.printStackTrace();
-          }
+    new Thread(() -> {
+      while (!ready) {
+        try {
+          Thread.sleep(5);
+        } catch (InterruptedException e) {
+          e.printStackTrace();
         }
-        WebFrame.super.setVisible(visible);
       }
+      WebFrame.super.setVisible(visible);
     }).start();
   }
 
@@ -179,26 +167,21 @@ public class WebFrame extends JFrame {
   // getContentHeight() to fail because it returns zero. Instead we make
   // things 10x more complicated so that images will work.
   void requestContentHeight(final int width, final URL url) {
-    new Thread(new Runnable() {
-      public void run() {
-        final JEditorPane dummy = new JEditorPane();
-        dummy.addPropertyChangeListener("page", new PropertyChangeListener() {
-          @Override
-          public void propertyChange(PropertyChangeEvent evt) {
-            int high = dummy.getPreferredSize().height;
-            editorPane.setPreferredSize(new Dimension(width, high));
-            pack();
-            setLocationRelativeTo(null);
-            ready = true;
-          }
-        });
-        try {
-          dummy.setPage(url);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-        dummy.setSize(width, Short.MAX_VALUE);
+    new Thread(() -> {
+      final JEditorPane dummy = new JEditorPane();
+      dummy.addPropertyChangeListener("page", evt -> {
+        int high = dummy.getPreferredSize().height;
+        editorPane.setPreferredSize(new Dimension(width, high));
+        pack();
+        setLocationRelativeTo(null);
+        ready = true;
+      });
+      try {
+        dummy.setPage(url);
+      } catch (IOException e) {
+        e.printStackTrace();
       }
+      dummy.setSize(width, Short.MAX_VALUE);
     }).start();
   }
 }

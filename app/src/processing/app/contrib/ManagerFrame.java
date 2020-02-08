@@ -142,11 +142,8 @@ public class ManagerFrame {
       }
     });
     // handle window closing commands for ctrl/cmd-W or hitting ESC.
-    Toolkit.registerWindowCloseKeys(frame.getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        disposeFrame();
-      }
-    });
+    Toolkit.registerWindowCloseKeys(frame.getRootPane(),
+                                    actionEvent -> disposeFrame());
 
     frame.getContentPane().addKeyListener(new KeyAdapter() {
       public void keyPressed(KeyEvent e) {

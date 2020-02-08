@@ -53,39 +53,35 @@ public class Library extends LocalContribution {
    * directories, and to skip export.txt. As of 2.0a2, other directories are
    * included, because we need things like the 'plugins' subfolder w/ video.
    */
-  static FilenameFilter standardFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      // skip .DS_Store files, .svn folders, etc
-      if (name.charAt(0) == '.') return false;
-      if (name.equals("CVS")) return false;
-      if (name.equals("export.txt")) return false;
-      File file = new File(dir, name);
+  static FilenameFilter standardFilter = (dir, name) -> {
+    // skip .DS_Store files, .svn folders, etc
+    if (name.charAt(0) == '.') return false;
+    if (name.equals("CVS")) return false;
+    if (name.equals("export.txt")) return false;
+    File file = new File(dir, name);
 //      return (!file.isDirectory());
-      if (file.isDirectory()) {
-        if (name.equals("macosx")) return false;
-        if (name.equals("macosx32")) return false;
-        if (name.equals("macosx64")) return false;
-        if (name.equals("windows")) return false;
-        if (name.equals("windows32")) return false;
-        if (name.equals("windows64")) return false;
-        if (name.equals("linux")) return false;
-        if (name.equals("linux32")) return false;
-        if (name.equals("linux64")) return false;
-        if (name.equals("linux-armv6hf")) return false;
-        if (name.equals("linux-arm64")) return false;
-        if (name.equals("android")) return false;
-      }
-      return true;
+    if (file.isDirectory()) {
+      if (name.equals("macosx")) return false;
+      if (name.equals("macosx32")) return false;
+      if (name.equals("macosx64")) return false;
+      if (name.equals("windows")) return false;
+      if (name.equals("windows32")) return false;
+      if (name.equals("windows64")) return false;
+      if (name.equals("linux")) return false;
+      if (name.equals("linux32")) return false;
+      if (name.equals("linux64")) return false;
+      if (name.equals("linux-armv6hf")) return false;
+      if (name.equals("linux-arm64")) return false;
+      if (name.equals("android")) return false;
     }
+    return true;
   };
 
-  static FilenameFilter jarFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      if (name.charAt(0) == '.') return false;  // skip ._blah.jar crap on OS X
-      if (new File(dir, name).isDirectory()) return false;
-      String lc = name.toLowerCase();
-      return lc.endsWith(".jar") || lc.endsWith(".zip");
-    }
+  static FilenameFilter jarFilter = (dir, name) -> {
+    if (name.charAt(0) == '.') return false;  // skip ._blah.jar crap on OS X
+    if (new File(dir, name).isDirectory()) return false;
+    String lc = name.toLowerCase();
+    return lc.endsWith(".jar") || lc.endsWith(".zip");
   };
 
 
@@ -469,13 +465,11 @@ public class Library extends LocalContribution {
   // . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 
 
-  static protected FilenameFilter junkFolderFilter = new FilenameFilter() {
-    public boolean accept(File dir, String name) {
-      // skip .DS_Store files, .svn and .git folders, etc
-      if (name.charAt(0) == '.') return false;
-      if (name.equals("CVS")) return false;  // old skool
-      return new File(dir, name).isDirectory();
-    }
+  static protected FilenameFilter junkFolderFilter = (dir, name) -> {
+    // skip .DS_Store files, .svn and .git folders, etc
+    if (name.charAt(0) == '.') return false;
+    if (name.equals("CVS")) return false;  // old skool
+    return new File(dir, name).isDirectory();
   };
 
 
@@ -556,8 +550,7 @@ public class Library extends LocalContribution {
 
   static public List<Library> list(File folder) {
     List<Library> libraries = new ArrayList<>();
-    List<File> librariesFolders = new ArrayList<>();
-    librariesFolders.addAll(discover(folder));
+    List<File> librariesFolders = new ArrayList<>(discover(folder));
 
     for (File baseFolder : librariesFolders) {
       libraries.add(new Library(baseFolder));

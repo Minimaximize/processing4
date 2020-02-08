@@ -122,11 +122,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
           hide();
         }
       });
-    Toolkit.registerWindowCloseKeys(window.getRootPane(), new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          hide();
-        }
-      });
+    Toolkit.registerWindowCloseKeys(window.getRootPane(), actionEvent -> hide());
 
     Toolkit.setIcon(window);
 
@@ -305,11 +301,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
     try {
       int value = Integer.parseInt(text);
       if (value > max) {
-        SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              field.setText(String.valueOf(max));
-            }
-          });
+        SwingUtilities.invokeLater(() -> field.setText(String.valueOf(max)));
         return max;
       }
       return value;
@@ -449,13 +441,7 @@ public class ColorChooser {  //extends JFrame implements DocumentListener {
       row.add(createFixedLabel(""));
     }
     button = new JButton(Language.text("prompt.cancel"));
-    button.addActionListener(new ActionListener() {
-
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ColorChooser.this.hide();
-      }
-    });
+    button.addActionListener(e -> ColorChooser.this.hide());
     row.add(button);
     row.add(Box.createHorizontalGlue());
     box.add(row);

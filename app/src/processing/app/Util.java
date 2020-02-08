@@ -440,13 +440,9 @@ public class Util {
    * @return a list of .jar and .zip files in that folder
    */
   static public File[] listJarFiles(File folder) {
-    return folder.listFiles(new FilenameFilter() {
-      public boolean accept(File dir, String name) {
-        return (!name.startsWith(".") &&
-                (name.toLowerCase().endsWith(".jar") ||
-                 name.toLowerCase().endsWith(".zip")));
-      }
-    });
+    return folder.listFiles((dir, name) -> (!name.startsWith(".") &&
+            (name.toLowerCase().endsWith(".jar") ||
+             name.toLowerCase().endsWith(".zip"))));
   }
 
 

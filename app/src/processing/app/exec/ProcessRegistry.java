@@ -9,20 +9,17 @@ public class ProcessRegistry {
       .synchronizedSet(new HashSet<Process>());
 
   static {
-    Runtime.getRuntime().addShutdownHook(new Thread() {
-      @Override
-      public void run() {
-        synchronized (REGISTRY) {
-          for (final Process p : REGISTRY) {
-            try {
-              //              System.err.println("Cleaning up rogue process " + p);
-              p.destroy();
-            } catch (final Exception drop) {
-            }
+    Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+      synchronized (REGISTRY) {
+        for (final Process p : REGISTRY) {
+          try {
+            //              System.err.println("Cleaning up rogue process " + p);
+            p.destroy();
+          } catch (final Exception drop) {
           }
         }
       }
-    });
+    }));
   }
 
   /**

@@ -59,11 +59,7 @@ public class SketchbookFrame extends JFrame {
     this.base = base;
     this.mode = mode;
 
-    final ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setVisible(false);
-      }
-    };
+    final ActionListener listener = e -> setVisible(false);
     Toolkit.registerWindowCloseKeys(getRootPane(), listener);
     Toolkit.setIcon(this);
 
@@ -148,24 +144,21 @@ public class SketchbookFrame extends JFrame {
   public void setVisible() {
     // TODO The ExamplesFrame code doesn't do this, is it necessary?
     // Either one is wrong or we're papering over something [fry 150811]
-    EventQueue.invokeLater(new Runnable() {
-      @Override
-      public void run() {
-        // Space for the editor plus a li'l gap
-        int roughWidth = getWidth() + 20;
-        Point p = null;
-        // If no window open, or the editor is at the edge of the screen
-        Editor editor = base.getActiveEditor();
-        if (editor == null ||
-            (p = editor.getLocation()).x < roughWidth) {
-          // Center the window on the screen
-          setLocationRelativeTo(null);
-        } else {
-          // Open the window relative to the editor
-          setLocation(p.x - roughWidth, p.y);
-        }
-        setVisible(true);
+    EventQueue.invokeLater(() -> {
+      // Space for the editor plus a li'l gap
+      int roughWidth = getWidth() + 20;
+      Point p = null;
+      // If no window open, or the editor is at the edge of the screen
+      Editor editor = base.getActiveEditor();
+      if (editor == null ||
+          (p = editor.getLocation()).x < roughWidth) {
+        // Center the window on the screen
+        setLocationRelativeTo(null);
+      } else {
+        // Open the window relative to the editor
+        setLocation(p.x - roughWidth, p.y);
       }
+      setVisible(true);
     });
   }
 }

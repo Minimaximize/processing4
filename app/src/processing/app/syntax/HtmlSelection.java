@@ -35,7 +35,7 @@ public class HtmlSelection implements Transferable {
 
   
   public DataFlavor[] getTransferDataFlavors() {
-    return flavors.toArray(new DataFlavor[flavors.size()]);
+    return flavors.toArray(new DataFlavor[0]);
   }
 
   

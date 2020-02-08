@@ -107,11 +107,7 @@ public class EditorConsole extends JScrollPane {
     if (flushTimer == null) {
       // periodically post buffered messages to the console
       // should the interval come from the preferences file?
-      flushTimer = new Timer(250, new ActionListener() {
-        public void actionPerformed(ActionEvent evt) {
-          flush();
-        }
-      });
+      flushTimer = new Timer(250, evt -> flush());
       flushTimer.start();
     }
   }

@@ -485,7 +485,7 @@ public class Toolkit {
     for (Component c : menu.getComponents()) {
       if (c instanceof JMenuItem) items.add((JMenuItem)c);
     }
-    setMenuMnemonics(items.toArray(new JMenuItem[items.size()]));
+    setMenuMnemonics(items.toArray(new JMenuItem[0]));
   }
 
 

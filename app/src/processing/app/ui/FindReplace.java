@@ -80,28 +80,18 @@ public class FindReplace extends JFrame {
     if (replaceString != null) replaceField.setText(replaceString);
 
     ignoreCaseBox = new JCheckBox(Language.text("find.ignore_case"));
-    ignoreCaseBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          ignoreCase = ignoreCaseBox.isSelected();
-        }
-      });
+    ignoreCaseBox.addActionListener(
+      e -> ignoreCase = ignoreCaseBox.isSelected());
     ignoreCaseBox.setSelected(ignoreCase);
 
     allTabsBox = new JCheckBox(Language.text("find.all_tabs"));
-    allTabsBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          allTabs = allTabsBox.isSelected();
-        }
-      });
+    allTabsBox.addActionListener(e -> allTabs = allTabsBox.isSelected());
     allTabsBox.setSelected(allTabs);
     allTabsBox.setEnabled(true);
 
     wrapAroundBox = new JCheckBox(Language.text("find.wrap_around"));
-    wrapAroundBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          wrapAround = wrapAroundBox.isSelected();
-        }
-      });
+    wrapAroundBox.addActionListener(
+      e -> wrapAround = wrapAroundBox.isSelected());
     wrapAroundBox.setSelected(wrapAround);
 
     GroupLayout layout = new GroupLayout(pain);
@@ -192,35 +182,15 @@ public class FindReplace extends JFrame {
     setLocation((screen.width - size.width) / 2,
                       (screen.height - size.height) / 2);
 
-    replaceButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replace();
-      }
-    });
+    replaceButton.addActionListener(e -> replace());
 
-    replaceAllButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replaceAll();
-      }
-    });
+    replaceAllButton.addActionListener(e -> replaceAll());
 
-    replaceAndFindButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        replaceAndFindNext();
-      }
-    });
+    replaceAndFindButton.addActionListener(e -> replaceAndFindNext());
 
-    findButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        findNext();
-      }
-    });
+    findButton.addActionListener(e -> findNext());
 
-    previousButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        findPrevious();
-      }
-    });
+    previousButton.addActionListener(e -> findPrevious());
 
     // you mustn't replace what you haven't found, my son
     // semantics of replace are "replace the current selection with the replace field"
@@ -237,11 +207,7 @@ public class FindReplace extends JFrame {
         handleClose();
       }
     });
-    Toolkit.registerWindowCloseKeys(getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent actionEvent) {
-        handleClose();
-      }
-    });
+    Toolkit.registerWindowCloseKeys(getRootPane(), actionEvent -> handleClose());
     Toolkit.setIcon(this);
 
     // hack to to get first field to focus properly on osx

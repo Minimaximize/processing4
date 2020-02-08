@@ -85,11 +85,7 @@ public class ExamplesFrame extends JFrame {
     examplesContribFolder = Base.getSketchbookExamplesFolder();
 
     Toolkit.setIcon(this);
-    Toolkit.registerWindowCloseKeys(getRootPane(), new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        setVisible(false);
-      }
-    });
+    Toolkit.registerWindowCloseKeys(getRootPane(), e -> setVisible(false));
 
     JPanel examplesPanel = new JPanel();
     examplesPanel.setLayout(new BorderLayout());
@@ -104,12 +100,7 @@ public class ExamplesFrame extends JFrame {
     openExamplesManagerPanel.setBorder(BorderFactory.createCompoundBorder(lineBorder, paddingBorder));
     openExamplesManagerPanel.setAlignmentX(Component.LEFT_ALIGNMENT);
     openExamplesManagerPanel.setCursor(new Cursor(Cursor.HAND_CURSOR));
-    addExamplesButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        ContributionManager.openExamples();
-      }
-    });
+    addExamplesButton.addActionListener(e -> ContributionManager.openExamples());
 
     final JTree tree = new JTree(buildTree());
 

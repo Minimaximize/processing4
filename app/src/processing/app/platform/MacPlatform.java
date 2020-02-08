@@ -69,13 +69,9 @@ public class MacPlatform extends DefaultPlatform {
     defaultMenuBar.add(fileMenu);
     desktop.setDefaultMenuBar(defaultMenuBar);
 
-    desktop.setAboutHandler((event) -> {
-      new About(null);
-    });
+    desktop.setAboutHandler((event) -> new About(null));
 
-    desktop.setPreferencesHandler((event) -> {
-      base.handlePrefs();
-    });
+    desktop.setPreferencesHandler((event) -> base.handlePrefs());
 
     desktop.setOpenFileHandler((event) -> {
       for (File file : event.getFiles()) {

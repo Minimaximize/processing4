@@ -174,15 +174,13 @@ public class CreateFont extends JFrame implements Tool {
     System.arraycopy(fontList, 0, list, 0, index);
 
     fontSelector = new JList<String>(list);
-    fontSelector.addListSelectionListener(new ListSelectionListener() {
-        public void valueChanged(ListSelectionEvent e) {
-          if (e.getValueIsAdjusting() == false) {
-            selection = fontSelector.getSelectedIndex();
-            okButton.setEnabled(true);
-            update();
-          }
-        }
-      });
+    fontSelector.addListSelectionListener(e -> {
+      if (e.getValueIsAdjusting() == false) {
+        selection = fontSelector.getSelectedIndex();
+        okButton.setEnabled(true);
+        update();
+      }
+    });
 
     fontSelector.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     fontSelector.setVisibleRowCount(12);
@@ -214,12 +212,10 @@ public class CreateFont extends JFrame implements Tool {
     panel.add(sizeSelector);
 
     smoothBox = new JCheckBox(Language.text("create_font.smooth"));
-    smoothBox.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          smooth = smoothBox.isSelected();
-          update();
-        }
-      });
+    smoothBox.addActionListener(e -> {
+      smooth = smoothBox.isSelected();
+      update();
+    });
     smoothBox.setSelected(smooth);
     panel.add(smoothBox);
 
@@ -232,11 +228,9 @@ public class CreateFont extends JFrame implements Tool {
 //    allBox.setSelected(all);
 //    panel.add(allBox);
     charsetButton = new JButton(Language.text("create_font.characters"));
-    charsetButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //showCharacterList();
-        charSelector.setVisible(true);
-      }
+    charsetButton.addActionListener(e -> {
+      //showCharacterList();
+      charSelector.setVisible(true);
     });
     panel.add(charsetButton);
 
@@ -250,17 +244,9 @@ public class CreateFont extends JFrame implements Tool {
 
     JPanel buttons = new JPanel();
     JButton cancelButton = new JButton(Language.text("prompt.cancel"));
-    cancelButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          setVisible(false);
-        }
-      });
+    cancelButton.addActionListener(e -> setVisible(false));
     okButton = new JButton(Language.text("prompt.ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          build();
-        }
-      });
+    okButton.addActionListener(e -> build());
     okButton.setEnabled(false);
 
     buttons.add(cancelButton);
@@ -269,11 +255,7 @@ public class CreateFont extends JFrame implements Tool {
 
     JRootPane root = getRootPane();
     root.setDefaultButton(okButton);
-    ActionListener disposer = new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          setVisible(false);
-        }
-      };
+    ActionListener disposer = actionEvent -> setVisible(false);
     Toolkit.registerWindowCloseKeys(root, disposer);
     Toolkit.setIcon(this);
 
@@ -515,12 +497,10 @@ class CharacterSelector extends JFrame {
     textarea.setFont(new Font("Dialog", Font.PLAIN, 12));
     pain.add(textarea);
 
-    ActionListener listener = new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        //System.out.println("action " + unicodeCharsButton.isSelected());
-        //unicodeBlockScroller.setEnabled(unicodeCharsButton.isSelected());
-        charsetList.setEnabled(unicodeCharsButton.isSelected());
-      }
+    ActionListener listener = e -> {
+      //System.out.println("action " + unicodeCharsButton.isSelected());
+      //unicodeBlockScroller.setEnabled(unicodeCharsButton.isSelected());
+      charsetList.setEnabled(unicodeCharsButton.isSelected());
     };
     defaultCharsButton =
       new JRadioButton(Language.text("create_font.default_characters"));
@@ -567,22 +547,14 @@ class CharacterSelector extends JFrame {
 
     JPanel buttons = new JPanel();
     JButton okButton = new JButton(Language.text("prompt.ok"));
-    okButton.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          setVisible(false);
-        }
-      });
+    okButton.addActionListener(e -> setVisible(false));
     okButton.setEnabled(true);
     buttons.add(okButton);
     pain.add(buttons);
 
     JRootPane root = getRootPane();
     root.setDefaultButton(okButton);
-    ActionListener disposer = new ActionListener() {
-        public void actionPerformed(ActionEvent actionEvent) {
-          setVisible(false);
-        }
-      };
+    ActionListener disposer = actionEvent -> setVisible(false);
     Toolkit.registerWindowCloseKeys(root, disposer);
     Toolkit.setIcon(this);
 

@@ -390,14 +390,10 @@ public abstract class LocalContribution extends Contribution {
                           final ContribProgressMonitor pm,
                           final StatusPanel status) {
     // TODO: replace with SwingWorker [jv]
-    new Thread(new Runnable() {
-      public void run() {
-        remove(base,
-               pm,
-               status,
-               ContributionListing.getInstance());
-      }
-    }, "Contribution Uninstaller").start();
+    new Thread(() -> remove(base,
+                        pm,
+                        status,
+                        ContributionListing.getInstance()), "Contribution Uninstaller").start();
   }
 
 
@@ -468,20 +464,17 @@ public abstract class LocalContribution extends Contribution {
 
       try {
         // TODO: run this in SwingWorker done() [jv]
-        EventQueue.invokeAndWait(new Runnable() {
-          @Override
-          public void run() {
-            Contribution advertisedVersion =
-                contribListing.getAvailableContribution(LocalContribution.this);
+        EventQueue.invokeAndWait(() -> {
+          Contribution advertisedVersion =
+              contribListing.getAvailableContribution(LocalContribution.this);
 
-            if (advertisedVersion == null) {
-              contribListing.removeContribution(LocalContribution.this);
-            } else {
-              contribListing.replaceContribution(LocalContribution.this, advertisedVersion);
-            }
-            base.refreshContribs(LocalContribution.this.getType());
-            base.setUpdatesAvailable(contribListing.countUpdates(base));
+          if (advertisedVersion == null) {
+            contribListing.removeContribution(LocalContribution.this);
+          } else {
+            contribListing.replaceContribution(LocalContribution.this, advertisedVersion);
           }
+          base.refreshContribs(LocalContribution.this.getType());
+          base.setUpdatesAvailable(contribListing.countUpdates(base));
         });
       } catch (InterruptedException e) {
         e.printStackTrace();
@@ -500,14 +493,11 @@ public abstract class LocalContribution extends Contribution {
         if (setDeletionFlag(true)) {
           try {
             // TODO: run this in SwingWorker done() [jv]
-            EventQueue.invokeAndWait(new Runnable() {
-              @Override
-              public void run() {
-                contribListing.replaceContribution(LocalContribution.this,
-                                                   LocalContribution.this);
-                base.refreshContribs(LocalContribution.this.getType());
-                base.setUpdatesAvailable(contribListing.countUpdates(base));
-              }
+            EventQueue.invokeAndWait(() -> {
+              contribListing.replaceContribution(LocalContribution.this,
+                                                 LocalContribution.this);
+              base.refreshContribs(LocalContribution.this.getType());
+              base.setUpdatesAvailable(contribListing.countUpdates(base));
             });
           } catch (InterruptedException e) {
             e.printStackTrace();

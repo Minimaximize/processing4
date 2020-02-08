@@ -712,7 +712,7 @@ public class Sketch {
     // resort internal list of files
     for (int i = 0; i < codeCount; i++) {
       if (code[i] == which) {
-        for (int j = i; j < codeCount-1; j++) {
+        for (int j = i; j < (codeCount - 1); j++) {
           code[j] = code[j+1];
         }
         codeCount--;
@@ -943,35 +943,33 @@ public class Sketch {
     // first get the contents of the editor text area
     updateSketchCodes();
 
-    File[] copyItems = folder.listFiles(new FileFilter() {
-      public boolean accept(File file) {
-        String name = file.getName();
-        // just in case the OS likes to return these as if they're legit
-        if (name.equals(".") || name.equals("..")) {
-          return false;
-        }
-        // list of files/folders to be ignored during "save as"
-        String[] ignorable = mode.getIgnorable();
-        if (ignorable != null) {
-          for (String ignore : ignorable) {
-            if (name.equals(ignore)) {
-              return false;
-            }
-          }
-        }
-        // ignore the extensions for code, since that'll be copied below
-        for (String ext : mode.getExtensions()) {
-          if (name.endsWith(ext)) {
+    File[] copyItems = folder.listFiles(file -> {
+      String name = file.getName();
+      // just in case the OS likes to return these as if they're legit
+      if (name.equals(".") || name.equals("..")) {
+        return false;
+      }
+      // list of files/folders to be ignored during "save as"
+      String[] ignorable = mode.getIgnorable();
+      if (ignorable != null) {
+        for (String ignore : ignorable) {
+          if (name.equals(ignore)) {
             return false;
           }
         }
-        // don't do screen captures, since there might be thousands. kind of
-        // a hack, but seems harmless. hm, where have i heard that before...
-        if (name.startsWith("screen-")) {
+      }
+      // ignore the extensions for code, since that'll be copied below
+      for (String ext : mode.getExtensions()) {
+        if (name.endsWith(ext)) {
           return false;
         }
-        return true;
       }
+      // don't do screen captures, since there might be thousands. kind of
+      // a hack, but seems harmless. hm, where have i heard that before...
+      if (name.startsWith("screen-")) {
+        return false;
+      }
+      return true;
     });
 
     startSaveAsThread(oldName, newName, newFolder, copyItems);
@@ -1034,158 +1032,154 @@ public class Sketch {
   void startSaveAsThread(final String oldName, final String newName,
                          final File newFolder, final File[] copyItems) {
     saving.set(true);
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        final JFrame frame =
-          new JFrame("Saving \u201C" + newName + "\u201C...");
-        frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
+    EventQueue.invokeLater(() -> {
+      final JFrame frame =
+        new JFrame("Saving \u201C" + newName + "\u201C...");
+      frame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 
-        Box box = Box.createVerticalBox();
-        box.setBorder(new EmptyBorder(16, 16, 16, 16));
+      Box box = Box.createVerticalBox();
+      box.setBorder(new EmptyBorder(16, 16, 16, 16));
 
-        if (Platform.isMacOS()) {
-          frame.setBackground(Color.WHITE);
+      if (Platform.isMacOS()) {
+        frame.setBackground(Color.WHITE);
+      }
+
+      JLabel label =
+        new JLabel("Saving additional files from the sketch folder...");
+      box.add(label);
+      box.add(Box.createVerticalStrut(8));
+
+      final JProgressBar progressBar = new JProgressBar(0, 100);
+      // no luck, stuck with ugly on OS X
+      //progressBar.putClientProperty("JComponent.sizeVariant", "regular");
+      progressBar.setValue(0);
+      progressBar.setStringPainted(true);
+      box.add(progressBar);
+
+      frame.getContentPane().add(box);
+      frame.pack();
+      frame.setLocationRelativeTo(editor);
+      Toolkit.setIcon(frame);
+      frame.setVisible(true);
+
+      new SwingWorker<Void, Void>() {
+
+        @Override
+        protected Void doInBackground() throws Exception {
+          addPropertyChangeListener(evt -> {
+            if ("progress".equals(evt.getPropertyName())) {
+              progressBar.setValue((Integer) evt.getNewValue());
+            }
+          });
+
+          long totalSize = 0;
+          for (File copyable : copyItems) {
+            totalSize += Util.calcSize(copyable);
+          }
+
+          long progress = 0;
+          setProgress(0);
+          for (File copyable : copyItems) {
+            if (copyable.isDirectory()) {
+              copyDir(copyable,
+                      new File(newFolder, copyable.getName()),
+                      progress, totalSize);
+              progress += Util.calcSize(copyable);
+            } else {
+              copyFile(copyable,
+                       new File(newFolder, copyable.getName()),
+                       progress, totalSize);
+              if (Util.calcSize(copyable) < 512 * 1024) {
+                // If the file length > 0.5MB, the copyFile() function has
+                // been redesigned to change progress every 0.5MB so that
+                // the progress bar doesn't stagnate during that time
+                progress += Util.calcSize(copyable);
+                setProgress((int) (progress * 100L / totalSize));
+              }
+            }
+          }
+          saving.set(false);
+          return null;
         }
 
-        JLabel label =
-          new JLabel("Saving additional files from the sketch folder...");
-        box.add(label);
-        box.add(Box.createVerticalStrut(8));
 
-        final JProgressBar progressBar = new JProgressBar(0, 100);
-        // no luck, stuck with ugly on OS X
-        //progressBar.putClientProperty("JComponent.sizeVariant", "regular");
-        progressBar.setValue(0);
-        progressBar.setStringPainted(true);
-        box.add(progressBar);
-
-        frame.getContentPane().add(box);
-        frame.pack();
-        frame.setLocationRelativeTo(editor);
-        Toolkit.setIcon(frame);
-        frame.setVisible(true);
-
-        new SwingWorker<Void, Void>() {
-
-          @Override
-          protected Void doInBackground() throws Exception {
-            addPropertyChangeListener(new PropertyChangeListener() {
-              public void propertyChange(PropertyChangeEvent evt) {
-                if ("progress".equals(evt.getPropertyName())) {
-                  progressBar.setValue((Integer) evt.getNewValue());
-                }
-              }
-            });
-
-            long totalSize = 0;
-            for (File copyable : copyItems) {
-              totalSize += Util.calcSize(copyable);
+        /**
+         * Overloaded copyFile that is called whenever a Save As is being done,
+         * so that the ProgressBar is updated for very large files as well.
+         */
+        void copyFile(File sourceFile, File targetFile,
+                      long progress, long totalSize) throws IOException {
+          BufferedInputStream from =
+            new BufferedInputStream(new FileInputStream(sourceFile));
+          BufferedOutputStream to =
+            new BufferedOutputStream(new FileOutputStream(targetFile));
+          byte[] buffer = new byte[16 * 1024];
+          int bytesRead;
+          int progRead = 0;
+          while ((bytesRead = from.read(buffer)) != -1) {
+            to.write(buffer, 0, bytesRead);
+            progRead += bytesRead;
+            if (progRead >= 512 * 1024) {  // to update progress bar every 0.5MB
+              progress += progRead;
+              //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
+              setProgress((int) (100L * progress / totalSize));
+              progRead = 0;
             }
-
-            long progress = 0;
-            setProgress(0);
-            for (File copyable : copyItems) {
-              if (copyable.isDirectory()) {
-                copyDir(copyable,
-                        new File(newFolder, copyable.getName()),
-                        progress, totalSize);
-                progress += Util.calcSize(copyable);
-              } else {
-                copyFile(copyable,
-                         new File(newFolder, copyable.getName()),
-                         progress, totalSize);
-                if (Util.calcSize(copyable) < 512 * 1024) {
-                  // If the file length > 0.5MB, the copyFile() function has
-                  // been redesigned to change progress every 0.5MB so that
-                  // the progress bar doesn't stagnate during that time
-                  progress += Util.calcSize(copyable);
-                  setProgress((int) (progress * 100L / totalSize));
-                }
-              }
-            }
-            saving.set(false);
-            return null;
           }
+          // Final update to progress bar
+          setProgress((int) (100L * progress / totalSize));
+
+          from.close();
+          from = null;
+          to.flush();
+          to.close();
+          to = null;
+
+          targetFile.setLastModified(sourceFile.lastModified());
+          targetFile.setExecutable(sourceFile.canExecute());
+        }
 
 
-          /**
-           * Overloaded copyFile that is called whenever a Save As is being done,
-           * so that the ProgressBar is updated for very large files as well.
-           */
-          void copyFile(File sourceFile, File targetFile,
-                        long progress, long totalSize) throws IOException {
-            BufferedInputStream from =
-              new BufferedInputStream(new FileInputStream(sourceFile));
-            BufferedOutputStream to =
-              new BufferedOutputStream(new FileOutputStream(targetFile));
-            byte[] buffer = new byte[16 * 1024];
-            int bytesRead;
-            int progRead = 0;
-            while ((bytesRead = from.read(buffer)) != -1) {
-              to.write(buffer, 0, bytesRead);
-              progRead += bytesRead;
-              if (progRead >= 512 * 1024) {  // to update progress bar every 0.5MB
-                progress += progRead;
-                //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
-                setProgress((int) (100L * progress / totalSize));
-                progRead = 0;
-              }
-            }
-            // Final update to progress bar
-            setProgress((int) (100L * progress / totalSize));
-
-            from.close();
-            from = null;
-            to.flush();
-            to.close();
-            to = null;
-
-            targetFile.setLastModified(sourceFile.lastModified());
-            targetFile.setExecutable(sourceFile.canExecute());
+        long copyDir(File sourceDir, File targetDir,
+                     long progress, long totalSize) throws IOException {
+          // Overloaded copyDir so that the Save As progress bar gets updated when the
+          //    files are in folders as well (like in the data folder)
+          if (sourceDir.equals(targetDir)) {
+            final String urDum = "source and target directories are identical";
+            throw new IllegalArgumentException(urDum);
           }
-
-
-          long copyDir(File sourceDir, File targetDir,
-                       long progress, long totalSize) throws IOException {
-            // Overloaded copyDir so that the Save As progress bar gets updated when the
-            //    files are in folders as well (like in the data folder)
-            if (sourceDir.equals(targetDir)) {
-              final String urDum = "source and target directories are identical";
-              throw new IllegalArgumentException(urDum);
+          targetDir.mkdirs();
+          String files[] = sourceDir.list();
+          for (String filename : files) {
+            // Ignore dot files (.DS_Store), dot folders (.svn) while copying
+            if (filename.charAt(0) == '.') {
+              continue;
             }
-            targetDir.mkdirs();
-            String files[] = sourceDir.list();
-            for (String filename : files) {
-              // Ignore dot files (.DS_Store), dot folders (.svn) while copying
-              if (filename.charAt(0) == '.') {
-                continue;
-              }
 
-              File source = new File(sourceDir, filename);
-              File target = new File(targetDir, filename);
-              if (source.isDirectory()) {
-                progress = copyDir(source, target, progress, totalSize);
-                //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
-                setProgress((int) (100L * progress / totalSize));
-                target.setLastModified(source.lastModified());
-              } else {
-                copyFile(source, target, progress, totalSize);
-                progress += source.length();
-                //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
-                setProgress((int) (100L * progress / totalSize));
-              }
+            File source = new File(sourceDir, filename);
+            File target = new File(targetDir, filename);
+            if (source.isDirectory()) {
+              progress = copyDir(source, target, progress, totalSize);
+              //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
+              setProgress((int) (100L * progress / totalSize));
+              target.setLastModified(source.lastModified());
+            } else {
+              copyFile(source, target, progress, totalSize);
+              progress += source.length();
+              //progressBar.setValue((int) Math.min(Math.ceil(progress * 100.0 / totalSize), 100));
+              setProgress((int) (100L * progress / totalSize));
             }
-            return progress;
           }
+          return progress;
+        }
 
 
-          @Override
-          public void done() {
-            frame.dispose();
-            editor.statusNotice(Language.text("editor.status.saving.done"));
-          }
-        }.execute();
-      }
+        @Override
+        public void done() {
+          frame.dispose();
+          editor.statusNotice(Language.text("editor.status.saving.done"));
+        }
+      }.execute();
     });
   }
 

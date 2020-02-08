@@ -185,11 +185,7 @@ public enum ContributionType {
    * subfolder if this is a ModeContribution.
    */
   public File[] listCandidates(File folder) {
-    return folder.listFiles(new FileFilter() {
-      public boolean accept(File potential) {
-        return isCandidate(potential);
-      }
-    });
+    return folder.listFiles(potential -> isCandidate(potential));
   }
 
 

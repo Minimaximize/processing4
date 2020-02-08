@@ -64,14 +64,11 @@ public class Welcome {
     checkbox.setFont(dialogFont);
     // handles the Help menu invocation, and also the pref not existing
     checkbox.setSelected("true".equals(Preferences.get("welcome.show")));
-    checkbox.addItemListener(new ItemListener() {
-      @Override
-      public void itemStateChanged(ItemEvent e) {
-        if (e.getStateChange() == ItemEvent.SELECTED) {
-          Preferences.setBoolean("welcome.show", true);
-        } else if (e.getStateChange() == ItemEvent.DESELECTED) {
-          Preferences.setBoolean("welcome.show", false);
-        }
+    checkbox.addItemListener(e -> {
+      if (e.getStateChange() == ItemEvent.SELECTED) {
+        Preferences.setBoolean("welcome.show", true);
+      } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+        Preferences.setBoolean("welcome.show", false);
       }
     });
     panel.add(checkbox);
@@ -80,11 +77,7 @@ public class Welcome {
 
     JButton button = new JButton("Get Started");
     button.setFont(Toolkit.getSansFont(14, Font.PLAIN));
-    button.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        view.handleClose();
-      }
-    });
+    button.addActionListener(e -> view.handleClose());
     panel.add(button);
     //panel.add(Box.createHorizontalGlue());
 
@@ -177,13 +170,11 @@ public class Welcome {
   static public void main(String[] args) {
     Platform.init();
 
-    EventQueue.invokeLater(new Runnable() {
-      public void run() {
-        try {
-          new Welcome(null, true);
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
+    EventQueue.invokeLater(() -> {
+      try {
+        new Welcome(null, true);
+      } catch (IOException e) {
+        e.printStackTrace();
       }
     });
   }

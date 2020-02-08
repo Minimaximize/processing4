@@ -165,15 +165,13 @@ public class ContributionTab extends JPanel {
 
     updateCategoryChooser();
 
-    categoryChooser.addItemListener(new ItemListener() {
-      public void itemStateChanged(ItemEvent e) {
-        category = (String) categoryChooser.getSelectedItem();
-        if (ManagerFrame.ANY_CATEGORY.equals(category)) {
-          category = null;
-        }
-        filterLibraries(category, filterField.filters);
-        contributionListPanel.updateColors();
+    categoryChooser.addItemListener(e -> {
+      category = (String) categoryChooser.getSelectedItem();
+      if (ManagerFrame.ANY_CATEGORY.equals(category)) {
+        category = null;
       }
+      filterLibraries(category, filterField.filters);
+      contributionListPanel.updateColors();
     });
 
     filterField = new FilterField();
@@ -210,18 +208,13 @@ public class ContributionTab extends JPanel {
 
     closeButton = Toolkit.createIconButton("manager/close");
     closeButton.setContentAreaFilled(false);
-    closeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, false);
-      }
-    });
+    closeButton.addActionListener(
+      e -> contribDialog.makeAndShowTab(false, false));
     tryAgainButton = new JButton("Try Again");
     tryAgainButton.setFont(ManagerFrame.NORMAL_PLAIN);
-    tryAgainButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        contribDialog.makeAndShowTab(false, true);
-        contribDialog.downloadAndUpdateContributionListing(editor.getBase());
-      }
+    tryAgainButton.addActionListener(e -> {
+      contribDialog.makeAndShowTab(false, true);
+      contribDialog.downloadAndUpdateContributionListing(editor.getBase());
     });
     layout.setHorizontalGroup(layout.createSequentialGroup()
       .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED,
@@ -247,7 +240,7 @@ public class ContributionTab extends JPanel {
     if (categoryChooser != null) {
       ArrayList<String> categories;
       categoryChooser.removeAllItems();
-      categories = new ArrayList<String>(contribListing.getCategories(filter));
+      categories = new ArrayList<>(contribListing.getCategories(filter));
 //      for (int i = 0; i < categories.size(); i++) {
 //        System.out.println(i + " category: " + categories.get(i));
 //      }
@@ -273,7 +266,6 @@ public class ContributionTab extends JPanel {
 
   protected void updateContributionListing() {
     if (editor != null) {
-      List<Contribution> contributions = new ArrayList<Contribution>();
 
       List<Library> libraries =
         new ArrayList<Library>(editor.getMode().contribLibraries);
@@ -289,7 +281,7 @@ public class ContributionTab extends JPanel {
         }
       }
 
-      contributions.addAll(libraries);
+      List<Contribution> contributions = new ArrayList<>(libraries);
 
       Base base = editor.getBase();
 
@@ -347,12 +339,9 @@ public class ContributionTab extends JPanel {
       removeFilter.setBorderPainted(false);
       removeFilter.setContentAreaFilled(false);
       removeFilter.setCursor(Cursor.getDefaultCursor());
-      removeFilter.addActionListener(new ActionListener() {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-          setText("");
-          filterField.requestFocusInWindow();
-        }
+      removeFilter.addActionListener(e -> {
+        setText("");
+        filterField.requestFocusInWindow();
       });
       //searchIcon = new ImageIcon(java.awt.Toolkit.getDefaultToolkit().getImage("NSImage://NSComputerTemplate"));
       setOpaque(false);

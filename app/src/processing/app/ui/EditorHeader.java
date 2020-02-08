@@ -526,11 +526,7 @@ public class EditorHeader extends JComponent {
     if (sketch != null) {
       menu.addSeparator();
 
-      ActionListener jumpListener = new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          editor.getSketch().setCurrentCode(e.getActionCommand());
-        }
-      };
+      ActionListener jumpListener = e -> editor.getSketch().setCurrentCode(e.getActionCommand());
       for (SketchCode code : sketch.getCode()) {
         item = new JMenuItem(code.getPrettyName());
         item.addActionListener(jumpListener);

@@ -93,14 +93,10 @@ class StatusPanel extends JPanel {
     label.setContentType("text/html");
     bodyRule = "a, body { font-family: " + buttonFont.getFamily() + "; " +
             "font-size: " + buttonFont.getSize() + "pt; color: black; text-decoration: none;}";
-    label.addHyperlinkListener(new HyperlinkListener() {
-
-      @Override
-      public void hyperlinkUpdate(HyperlinkEvent e) {
-        if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
-          if (e.getURL() != null) {
-            Platform.openURL(e.getURL().toString());
-          }
+    label.addHyperlinkListener(e -> {
+      if (e.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
+        if (e.getURL() != null) {
+          Platform.openURL(e.getURL().toString());
         }
       }
     });
@@ -108,15 +104,12 @@ class StatusPanel extends JPanel {
     //installButton.setDisabledIcon(installIcon);
     installButton.setFont(buttonFont);
     installButton.setHorizontalAlignment(SwingConstants.LEFT);
-    installButton.addActionListener(new ActionListener() {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        installButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.install();
-        StatusPanel.this.update(currentPanel);
-      }
+    installButton.addActionListener(e -> {
+      installButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.install();
+      StatusPanel.this.update(currentPanel);
     });
     progressPanel = new JPanel();
     progressPanel.setLayout(new BorderLayout());
@@ -129,27 +122,23 @@ class StatusPanel extends JPanel {
     updateButton = Toolkit.createIconButton("Update", updateIcon);
     updateButton.setFont(buttonFont);
     updateButton.setHorizontalAlignment(SwingConstants.LEFT);
-    updateButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        updateButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.update();
-        StatusPanel.this.update(currentPanel);
-      }
+    updateButton.addActionListener(e -> {
+      updateButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.update();
+      StatusPanel.this.update(currentPanel);
     });
 
     removeButton = Toolkit.createIconButton("Remove", removeIcon);
     removeButton.setFont(buttonFont);
     removeButton.setHorizontalAlignment(SwingConstants.LEFT);
-    removeButton.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-        removeButton.setEnabled(false);
-        DetailPanel currentPanel =
-          contributionTab.contributionListPanel.getSelectedPanel();
-        currentPanel.remove();
-        StatusPanel.this.update(currentPanel);
-      }
+    removeButton.addActionListener(e -> {
+      removeButton.setEnabled(false);
+      DetailPanel currentPanel =
+        contributionTab.contributionListPanel.getSelectedPanel();
+      currentPanel.remove();
+      StatusPanel.this.update(currentPanel);
     });
 
     int labelWidth = (width != 0) ?

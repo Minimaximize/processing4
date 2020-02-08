@@ -131,28 +131,26 @@ public class WebServer implements HttpConstants {
         final int port = 8080;
 
         //SwingUtilities.invokeLater(new Runnable() {
-        Runnable r = new Runnable() {
-          public void run() {
-            try {
-              ServerSocket ss = new ServerSocket(port);
-              while (true) {
-                Socket s = ss.accept();
-                WebServerWorker w = null;
-                synchronized (threads) {
-                  if (threads.isEmpty()) {
-                    WebServerWorker ws = new WebServerWorker(zip, entries);
-                    ws.setSocket(s);
-                    (new Thread(ws, "additional worker")).start();
-                  } else {
-                    w = (WebServerWorker) threads.elementAt(0);
-                    threads.removeElementAt(0);
-                    w.setSocket(s);
-                  }
+        Runnable r = () -> {
+          try {
+            ServerSocket ss = new ServerSocket(port);
+            while (true) {
+              Socket s = ss.accept();
+              WebServerWorker w = null;
+              synchronized (threads) {
+                if (threads.isEmpty()) {
+                  WebServerWorker ws = new WebServerWorker(zip, entries);
+                  ws.setSocket(s);
+                  (new Thread(ws, "additional worker")).start();
+                } else {
+                  w = (WebServerWorker) threads.elementAt(0);
+                  threads.removeElementAt(0);
+                  w.setSocket(s);
                 }
               }
-            } catch (IOException e) {
-              e.printStackTrace();
             }
+          } catch (IOException e) {
+            e.printStackTrace();
           }
         };
         new Thread(r).start();

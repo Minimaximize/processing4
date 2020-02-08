@@ -208,13 +208,12 @@ public class Recent {
 
 //      JMenuItem item = new JMenuItem(rec.getName() + " | " + purtyPath);
       JMenuItem item = new JMenuItem(purtyPath);
-      item.addActionListener(new ActionListener() {
-        public void actionPerformed(ActionEvent e) {
-          // Base will call handle() (below) which will cause this entry to
-          // be removed from the list and re-added to the end. If already
-          // opened, Base will bring the window forward, and also call handle()
-          // so that it's re-queued to the newest slot in the Recent menu.
-          base.handleOpen(rec.path);
+      item.addActionListener(e -> {
+        // Base will call handle() (below) which will cause this entry to
+        // be removed from the list and re-added to the end. If already
+        // opened, Base will bring the window forward, and also call handle()
+        // so that it's re-queued to the newest slot in the Recent menu.
+        base.handleOpen(rec.path);
 //          if (rec.sketch == null) {
 //            // this will later call 'add' to put it back on the stack
 //            base.handleOpen(rec.path); //, rec.state);
@@ -226,7 +225,6 @@ public class Recent {
 //          } else {
 ////              System.out.println("sketch not null in handleOpen: " + record.getPath());
 //          }
-        }
       });
       //menu.add(item);
       menu.insert(item, 0);

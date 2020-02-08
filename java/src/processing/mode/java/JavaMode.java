@@ -53,7 +53,6 @@ public class JavaMode extends Mode {
   public JavaMode(Base base, File folder) {
     super(base, folder);
 
-//    initLogger();
     loadPreferences();
   }
 

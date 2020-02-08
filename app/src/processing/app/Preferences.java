@@ -221,7 +221,7 @@ public class Preferences {
         // Fix for 0163 to properly use Unicode when writing preferences.txt
         PrintWriter writer = PApplet.createWriter(preferencesTemp);
 
-        String[] keyList = table.keySet().toArray(new String[table.size()]);
+        String[] keyList = table.keySet().toArray(new String[0]);
         // Sorting is really helpful for debugging, diffing, and finding keys
         keyList = PApplet.sort(keyList);
         for (String key : keyList) {

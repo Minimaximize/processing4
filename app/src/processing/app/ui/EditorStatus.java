@@ -305,16 +305,14 @@ public class EditorStatus extends BasicSplitPaneDivider {
 
   public void startIndeterminate() {
     indeterminate = true;
-    thread = new Thread() {
-      public void run() {
-        while (Thread.currentThread() == thread) {
-          repaint();
-          try {
-            Thread.sleep(1000 / 10);
-          } catch (InterruptedException e) { }
-        }
+    thread = new Thread(() -> {
+      while (Thread.currentThread() == thread) {
+        repaint();
+        try {
+          Thread.sleep(1000 / 10);
+        } catch (InterruptedException e) { }
       }
-    };
+    });
     thread.setName("Editor Status");
     thread.start();
   }
