@@ -78,45 +78,12 @@ public class PGraphicsFX2D extends PGraphics {
   int transformCount;
   Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
 
-//  Line2D.Float line = new Line2D.Float();
-//  Ellipse2D.Float ellipse = new Ellipse2D.Float();
-//  Rectangle2D.Float rect = new Rectangle2D.Float();
-//  Arc2D.Float arc = new Arc2D.Float();
-//
-//  protected Color tintColorObject;
-//
-//  protected Color fillColorObject;
-//  public boolean fillGradient;
-//  public Paint fillGradientObject;
-//
-//  protected Color strokeColorObject;
-//  public boolean strokeGradient;
-//  public Paint strokeGradientObject;
-
-
-
   //////////////////////////////////////////////////////////////
 
   // INTERNAL
 
 
   public PGraphicsFX2D() { }
-
-
-  //public void setParent(PApplet parent)
-
-
-  //public void setPrimary(boolean primary)
-
-
-  //public void setPath(String path)
-
-
-  //public void setSize(int width, int height)
-
-
-  //public void dispose()
-
 
   @Override
   public PSurface createSurface() {
@@ -135,13 +102,6 @@ public class PGraphicsFX2D extends PGraphics {
 
   // FRAME
 
-
-//  @Override
-//  public boolean canDraw() {
-//    return true;
-//  }
-
-
   @Override
   public void beginDraw() {
     checkSettings();
@@ -159,44 +119,6 @@ public class PGraphicsFX2D extends PGraphics {
       loadPixels();
     }
   }
-
-
-
-  //////////////////////////////////////////////////////////////
-
-  // SETTINGS
-
-
-  //protected void checkSettings()
-
-
-  //protected void defaultSettings()
-
-
-  //protected void reapplySettings()
-
-
-
-  //////////////////////////////////////////////////////////////
-
-  // HINT
-
-
-  //public void hint(int which)
-
-
-
-  //////////////////////////////////////////////////////////////
-
-  // SHAPE CREATION
-
-
-  //protected PShape createShapeFamily(int type)
-
-
-  //protected PShape createShapePrimitive(int kind, float... p)
-
-
 
   //////////////////////////////////////////////////////////////
 
@@ -219,15 +141,6 @@ public class PGraphicsFX2D extends PGraphics {
       translate(0.5f, 0.5f);
     }
   }
-
-
-  //public boolean edge(boolean e)
-
-
-  //public void normal(float nx, float ny, float nz) {
-
-
-  //public void textureMode(int mode)
 
 
   @Override
@@ -2310,12 +2223,6 @@ public class PGraphicsFX2D extends PGraphics {
 
 
   //////////////////////////////////////////////////////////////
-
-  // SAVE
-
-
-  //public void save(String filename)
-
 
 
   //////////////////////////////////////////////////////////////

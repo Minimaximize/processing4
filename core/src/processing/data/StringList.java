@@ -7,6 +7,7 @@ import java.util.Iterator;
 import java.util.Random;
 
 import processing.core.PApplet;
+import processing.data.legacy.JSONObject;
 
 /**
  * Helper class for a list of Strings. Lists are designed to have some of the

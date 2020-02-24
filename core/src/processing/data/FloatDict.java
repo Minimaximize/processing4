@@ -6,7 +6,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import processing.core.PApplet;
-
+import processing.data.legacy.JSONObject;
 
 /**
  * A simple table class to use a String as a lookup for an float value.
