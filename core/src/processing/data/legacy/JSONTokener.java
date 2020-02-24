@@ -1,4 +1,4 @@
-package processing.data;
+package processing.data.legacy;
 
 import java.io.BufferedReader;
 import java.io.IOException;
